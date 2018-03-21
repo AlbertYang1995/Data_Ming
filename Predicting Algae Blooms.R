@@ -1,0 +1,38 @@
+install.packages("DMwR")
+library(DMwR)
+head(algae)
+summary(algae)
+hist(algae$mxPH, prob = F)
+install.packages("car")
+library(car)
+par(mfrow = c(1, 2))
+hist(algae$mxPH, prob = T, xlab = '',
+     main = "Histogram of maximum pH value", ylim = 0:1)
+lines(density(algae$mxPH, na.rm = T))
+rug(jitter(algae$mxPH))
+qqPlot(algae$mxPH, main = "Normal QQ plot of maximum pH")
+par(mfrow = c(1, 1))
+boxplot(algae$oPO4, ylab = "Orthophosphate(oPO4)")
+rug(jitter(algae$oPO4), side = 2)
+abline(h = mean(algae$oPO4, na.rm = T), lty = 2)
+plot(algae$NH4, xlab = "")
+abline(h = mean(algae$NH4, na.rm = T), lty = 1)
+abline(h = mean(algae$NH4, na.rm = T) + sd(algae$NH4, na.rm = T),
+       lty = 2)
+abline(h = median(algae$NH4, na.rm = T), lty = 3)
+identify(algae$NH4)
+plot(algae$NH4, xlab = "")
+clicked.lines <- identify(algae$NH4)
+algae[clicked.lines]
+library(lattice)
+bwplot(size ~ a1, data = algae, ylab = 'River Size', xlab = "Algal A1", col = "green")
+install.packages("Hmisc")
+library(Hmisc)
+bwplot(size ~ a1, data = algae, panel = panel.bpplot,
+       probs = seq(.01, .49, by = .01), datadensity = TRUE,
+       ylab = "River Size", xlab = "Algal A1")
+data(algae)
+algae <- algae[-manyNAs(algae), ]
+clean.algae <- knnImputation(algae, k = 10)
+lm.a1 <- lm(a1 ~ ., data = clean.algae[, 1:12])
+summary(lm.a1)

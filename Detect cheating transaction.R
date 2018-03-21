@@ -1,0 +1,12 @@
+library(DMwR)
+data(sales)
+head(sales)
+summary(sales)
+totS <- table(sales$ID)
+totP <- table(sales$Prod)
+par(mfrow = c(1, 2))
+barplot(totS)
+barplot(totP)
+sales$Uprice <- sales$Val / sales$Quant
+summary(sales$Uprice)
+boxplot(sales$Uprice)
